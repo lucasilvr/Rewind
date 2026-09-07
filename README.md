@@ -15,7 +15,7 @@ Este projeto está sendo desenvolvido como trabalho prático para a disciplina d
 ## Tecnologias Utilizadas
 
 Este projeto foi inicializado com uma arquitetura moderna e padronizada:
-- **[Next.js](https://nextjs.org/)** (App Router)
-- **[React](https://react.dev/)** 
-- **[TypeScript](https://www.typescriptlang.org/)**
-- **CSS Modules** (Estilização pura e isolada por componente)
+- **[Next.js]
+- **[React]** 
+- **[TypeScript]**
+- **CSS Modules**
