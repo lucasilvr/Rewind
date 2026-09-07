@@ -15,7 +15,7 @@ Este projeto está sendo desenvolvido como trabalho prático para a disciplina d
 ## Tecnologias Utilizadas
 
 Este projeto foi inicializado com uma arquitetura moderna e padronizada:
-- **[Next.js]**
-- **[React]** 
-- **[TypeScript]**
+- **Next.js**
+- **React** 
+- **TypeScript**
 - **CSS Modules**
