@@ -4,7 +4,7 @@ import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { InputField } from "../../../components/InputField/InputField";
-import styles from "./login.module.css";
+import styles from "./page.module.css";
 
 const LoginPage = () => {
   const router = useRouter();
