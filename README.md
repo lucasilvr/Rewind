@@ -19,3 +19,18 @@ Este projeto foi inicializado com uma arquitetura moderna e padronizada:
 - **[React]** 
 - **[TypeScript]**
 - **CSS Modules**
+
+## Como Executar o Projeto Localmente
+
+### Pré-requisitos
+Antes de começar, certifique-se de ter instalado em sua máquina:
+- [Node.js](https://nodejs.org/en/) (versão 18 ou superior)
+- Git (para versionamento e clonagem)
+
+### Passos para rodar o Front-end
+
+**Clone o repositório:**
+   ```bash
+   git clone https://github.com/lucasilvr/Rewind.git
+Acesse o projeto e rode: npm install
+Depois inicie o servidor localmente: npm run dev
