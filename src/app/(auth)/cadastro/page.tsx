@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { InputField } from "../../../components/InputField/InputField";
-import styles from "./cadastro.module.css";
+import styles from "./page.module.css";
 
 const CadastroPage = () => {
   const router = useRouter();
