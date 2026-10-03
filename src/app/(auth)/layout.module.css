@@ -1,0 +1,54 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+}
+
+.leftColumn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.formWrapper {
+  width: 100%;
+  max-width: 448px;
+}
+
+.rightColumn {
+  display: none;
+  background-color: #09090b;
+  overflow: hidden;
+  position: relative;
+}
+
+.backgroundImage {
+  object-fit: cover;
+  opacity: 0.8;
+  mix-blend-mode: lighten;
+}
+
+.vignetteOverlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .container {
+    flex-direction: row;
+  }
+  .leftColumn, .rightColumn {
+    width: 50%;
+  }
+  .rightColumn {
+    display: block;
+  }
+}

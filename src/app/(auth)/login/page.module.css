@@ -1,0 +1,79 @@
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1A1B26;
+  margin-bottom: 8px;
+  font-family: var(--font-poppins), sans-serif;
+}
+
+.subtitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #858A9F;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.checkboxContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px; 
+  margin-top: 8px;
+  margin-bottom: 24px;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  border: 1px solid #858A9F;
+  border-radius: 4px;
+}
+
+.checkboxLabel {
+  font-size: 14px;
+  color: #858A9F;
+  cursor: pointer;
+}
+
+.submitButton {
+  width: 100%;
+  background-color: #000000;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.submitButton:hover {
+  background-color: #27272a;
+}
+.footer {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.footerText {
+  color: #858A9F;
+}
+
+.footerLink {
+  color: #1A1B26;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.footerLink:hover {
+  text-decoration: underline;
+}
