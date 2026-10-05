@@ -1,0 +1,155 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String
+  username     String   @unique
+  email        String   @unique
+  passwordHash String
+  bio          String?
+  avatarUrl    String?
+  city         String?
+  country      String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  listens      Listen[]
+  favorites    Favorite[]
+  reviews      Review[]
+  comments     Comment[]
+  reviewLikes  ReviewLike[]
+
+  @@map("users")
+}
+
+model Artist {
+  id         String  @id @default(uuid()) @db.Uuid
+  externalId String  @unique
+  name       String
+  imageUrl   String?
+
+  albums     AlbumArtist[]
+
+  @@map("artists")
+}
+
+model Album {
+  id           String  @id @default(uuid()) @db.Uuid
+  externalId   String  @unique
+  title        String
+  coverUrl     String
+  releaseYear  Int
+  totalTracks  Int
+  createdAt    DateTime @default(now())
+
+  tracks       Track[]
+  artists      AlbumArtist[]
+  listens      Listen[]
+  favorites    Favorite[]
+  reviews      Review[]
+  comments     Comment[]
+
+  @@map("albums")
+}
+
+model AlbumArtist {
+  albumId  String @db.Uuid
+  artistId String @db.Uuid
+
+  album    Album  @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  artist   Artist @relation(fields: [artistId], references: [id], onDelete: Cascade)
+
+  @@id([albumId, artistId])
+  @@map("album_artists")
+}
+
+model Track {
+  id         String  @id @default(uuid()) @db.Uuid
+  albumId    String  @db.Uuid
+  externalId String  @unique
+  position   String
+  title      String
+  durationMs Int?
+
+  album      Album @relation(fields: [albumId], references: [id], onDelete: Cascade)
+
+  @@map("tracks")
+}
+
+model Listen {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @db.Uuid
+  albumId    String   @db.Uuid
+  listenedAt DateTime
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  album      Album    @relation(fields: [albumId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([albumId])
+  @@map("listens")
+}
+
+model Favorite {
+  userId    String   @db.Uuid
+  albumId   String   @db.Uuid
+  createdAt DateTime @default(now())
+
+  user       User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  album      Album @relation(fields: [albumId], references: [id], onDelete: Cascade)
+
+  @@id([userId, albumId])
+  @@map("favorites")
+}
+
+model Review {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  albumId   String   @db.Uuid
+  rating    Decimal  @db.Decimal(2, 1)
+  content   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  album      Album        @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  likes      ReviewLike[]
+
+  @@index([userId])
+  @@index([albumId])
+  @@map("reviews")
+}
+
+model Comment {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  albumId   String   @db.Uuid
+  content   String
+  createdAt DateTime @default(now())
+
+  user       User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  album      Album @relation(fields: [albumId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([albumId])
+  @@map("comments")
+}
+
+model ReviewLike {
+  userId    String   @db.Uuid
+  reviewId  String   @db.Uuid
+  createdAt DateTime @default(now())
+
+  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  review     Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+
+  @@id([userId, reviewId])
+  @@map("review_likes")
+}
