@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
+import { AppShell } from "@/components/AppShell/AppShell";
 import "./globals.css";
 
-interface LayoutProps<T extends string> {
+interface RootLayoutProps {
   children: React.ReactNode;
-  params: Record<string, string>;
-  searchParams: Record<string, string | string[] | undefined>;
-  pathname: T;
 }
 
 const inter = Inter({
@@ -25,10 +23,12 @@ export const metadata: Metadata = {
   description: "Trabalho de Gerência de Projeto de Software",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="pt-BR" className={`${inter.variable} ${poppins.variable}`}>
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <AppShell>{children}</AppShell>
+      </body>
     </html>
   );
 }

@@ -1,1 +1,13 @@
 @import "tailwindcss";
+
+/* Paleta do Rewind: use estas variáveis nos CSS Modules. */
+:root {
+  --color-accent: #ebb625;
+  --color-background: #ededf8;
+  --color-input: #e2e2f2;
+  --color-text: #1a1b26;
+  --color-text-muted: #858a9f;
+  --color-surface: #ffffff;
+  --color-border: #d3d4e2;
+  --color-favorite: #e5484d;
+}
