@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { prisma } from "../lib/prisma";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { authMiddleware, AuthRequest } from "../middleware/auth.middleware";
 
 const router = Router();
 
@@ -111,23 +113,34 @@ router.post("/login", async (req, res) => {
       });
     }
 
+    const token = jwt.sign(
+      { userId: user.id }, 
+      process.env.JWT_SECRET!, 
+      { expiresIn: "1h" }
+    );
+
     return res.status(200).json({
-      id: user.id,
-      name: user.name,
-      username: user.username,
-      email: user.email,
-      bio: user.bio,
-      avatarUrl: user.avatarUrl,
-      city: user.city,
-      country: user.country,
-      createdAt: user.createdAt,
+      token,
+      user:{
+        id: user.id,
+        name: user.name,
+        username: user.username,
+        email: user.email,
+        bio: user.bio,
+        avatarUrl: user.avatarUrl,
+        city: user.city,
+        country: user.country,
+        createdAt: user.createdAt
+      }
     });
+
   } catch (error) {
     console.error(error);
+    
     return res.status(500).json({
       error: "Erro ao realizar login"
     });
   }
 });
 
-export default router;
+export default router;  
