@@ -12,6 +12,8 @@ function fakeProvider(): MusicProvider {
       title: "Álbum",
       coverUrl: null,
       releaseYear: 2000,
+      releaseDate: "2000-01-01",
+      durationMs: 0,
       totalTracks: 0,
       artists: [],
       tracks: [],

@@ -88,11 +88,26 @@ describe("DeezerProvider: mapeamento", () => {
 
     assert.equal(album.coverUrl, null);
     assert.equal(album.releaseYear, 1995);
+    assert.equal(album.releaseDate, "1995-10-23");
     assert.deepEqual(album.artists.map((artist) => artist.name), ["Banda"]);
     assert.deepEqual(album.tracks, [
       { externalId: "100", position: "1-1", title: "Faixa A", durationMs: 200000 },
       { externalId: "101", position: "2-1", title: "Faixa B", durationMs: null },
     ]);
+    assert.equal(album.durationMs, 200000);
+  });
+
+  test("getAlbum trata data desconhecida (0000-00-00) e álbum sem faixas", async () => {
+    mockFetch({
+      "/album/2": { id: 2, title: "Álbum sem data", release_date: "0000-00-00", nb_tracks: 0 },
+      "/album/2/tracks": { data: [] },
+    });
+
+    const album = await createProvider().getAlbum("2");
+
+    assert.equal(album.releaseDate, null);
+    assert.equal(album.releaseYear, null);
+    assert.equal(album.durationMs, 0);
   });
 
   test("getNewReleases usa a seleção editorial quando releases vem vazio e busca o ano", async () => {
