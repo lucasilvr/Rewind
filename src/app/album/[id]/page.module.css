@@ -1,0 +1,35 @@
+.page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #FFF9F9 0%, #D0D2E0 100%);
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 40px 16px;
+}
+
+.title {
+  font-family: var(--font-poppins), sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1A1B26;
+}
+
+/* Lista de faixas à esquerda e cartão de avaliação à direita, como no Figma. */
+.content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 48px;
+  margin-top: 32px;
+}
+
+.mainColumn {
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .content {
+    grid-template-columns: 1fr;
+  }
+}
