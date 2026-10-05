@@ -27,6 +27,8 @@ export interface ExternalAlbumSummary {
 }
 
 export interface ExternalAlbum extends ExternalAlbumSummary {
+  releaseDate: string | null;
+  durationMs: number;
   tracks: ExternalTrack[];
 }
 
