@@ -89,7 +89,13 @@ export class DeezerProvider implements MusicProvider {
       this.#request<DeezerList<DeezerTrack>>(`/album/${externalId}/tracks`, { limit: MAX_TRACKS }),
     ]);
 
-    return { ...toAlbumSummary(album), tracks: toTracks(tracks.data) };
+    const albumTracks = toTracks(tracks.data);
+    return { 
+      ...toAlbumSummary(album), 
+      releaseDate: releaseDate(album.release_date),
+      durationMs: albumTracks.reduce((total, track) => total + (track.durationMs ?? 0), 0),
+      tracks: albumTracks,
+    };
   }
 
   async getNewReleases(options?: ListOptions): Promise<ExternalAlbumSummary[]> {
@@ -225,3 +231,7 @@ function toTracks(tracks: DeezerTrack[]): ExternalTrack[] {
     };
   });
 }
+function releaseDate(release_date: string | undefined): string | null {
+  throw new Error("Function not implemented.");
+}
+
