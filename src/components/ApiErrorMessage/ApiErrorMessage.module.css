@@ -1,0 +1,38 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 8px;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+.title {
+  font-family: var(--font-poppins), sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #991b1b;
+}
+
+.message {
+  font-size: 14px;
+  color: #7f1d1d;
+}
+
+.retry {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  background-color: #b91c1c;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.retry:hover {
+  background-color: #991b1b;
+}
