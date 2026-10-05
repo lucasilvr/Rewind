@@ -231,7 +231,7 @@ function toTracks(tracks: DeezerTrack[]): ExternalTrack[] {
     };
   });
 }
-function releaseDate(release_date: string | undefined): string | null {
-  throw new Error("Function not implemented.");
+function releaseDate(value: string | undefined): string | null {
+  if(!value || !/^\d{4}-\d{2}-\d{2}$/.test(value) || value.startsWith("0000")) return null;
+  return value;
 }
-
