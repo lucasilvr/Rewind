@@ -26,6 +26,8 @@ export interface AlbumSummary {
 }
 
 export interface Album extends AlbumSummary {
+  releaseDate: string | null;
+  durationMs: number;
   tracks: Track[];
 }
 
