@@ -25,4 +25,34 @@ router.get("/:id/rating", async (req, res) => {
     });
 });
 
+// Só avaliações com texto (resenhas), das mais recentes para as mais antigas.
+router.get("/:id/reviews", async (req, res) => {
+    const { id } = req.params;
+
+    const reviews = await prisma.review.findMany({
+        where: {
+            album: { externalId: id },
+            content: { not: null },
+            NOT: { content: "" }
+        },
+        orderBy: { createdAt: "desc" },
+        select: {
+            id: true,
+            rating: true,
+            content: true,
+            createdAt: true,
+            user: {
+                select: { id: true, name: true, username: true, avatarUrl: true }
+            }
+        }
+    });
+
+    res.json({
+        data: reviews.map((review) => ({
+            ...review,
+            rating: Number(review.rating)
+        }))
+    });
+});
+
 export default router;
