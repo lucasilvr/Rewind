@@ -1,0 +1,31 @@
+/* A janela não rola: topbar e moldura ficam fixas e só o conteúdo rola por dentro. */
+.shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background-color: var(--color-background);
+  font-family: var(--font-poppins), sans-serif;
+  color: var(--color-text);
+}
+
+.content {
+  flex: 1;
+  min-height: 0;
+  margin: 0 12px 12px;
+  border-radius: 24px;
+  /* O degradê fica parado na moldura enquanto o conteúdo rola. */
+  background: linear-gradient(180deg, #f8f8fd 0%, #e6e7f1 55%, #d6d7e4 100%);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #c4c6d8 transparent;
+}
+
+@media (max-width: 768px) {
+  .content {
+    margin: 0 8px 8px;
+    border-radius: 16px;
+  }
+}

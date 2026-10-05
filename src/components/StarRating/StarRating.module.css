@@ -1,0 +1,10 @@
+.stars {
+  display: inline-flex;
+  gap: 2px;
+  fill: var(--color-accent);
+}
+
+.empty {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}

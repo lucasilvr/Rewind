@@ -1,0 +1,52 @@
+.dialog {
+  width: min(800px, calc(100vw - 32px));
+  max-height: calc(100vh - 32px);
+  margin: auto;
+  padding: 0;
+  border: none;
+  border-radius: 20px;
+  background-color: #f7f7fc;
+  color: var(--color-text);
+  font-family: var(--font-poppins), sans-serif;
+  box-shadow: 0 24px 64px rgba(26, 27, 38, 0.18);
+}
+
+.dialog::backdrop {
+  background-color: rgba(60, 62, 82, 0.45);
+}
+
+.content {
+  padding: 24px 22px 18px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-left: 10px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.close:hover {
+  background-color: var(--color-input);
+  color: var(--color-text);
+}
