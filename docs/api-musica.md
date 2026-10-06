@@ -32,7 +32,8 @@ Ela é a única das três opções avaliadas que oferece busca, capa, faixas e a
 
 ### Limitações observadas nos testes
 
-- A busca (`/search/album`) **não informa o ano**. Nos resultados de busca, `releaseYear` vem `null`. Em "Novidades", o backend busca o detalhe de cada álbum para preencher o ano (no máximo 25 chamadas, guardadas em cache).
+- A busca (`/search/album`) e as listas editoriais **não informam o ano**. Na busca por nome e em "Novidades", o backend busca o detalhe de cada álbum para preencher o ano (no máximo 25 chamadas por lista, guardadas em cache).
+- Os filtros da busca avançada da Deezer (`album:"..."`, `artist:"..."`) trazem resultados pouco relevantes. A busca por nome usa a busca geral; a busca por artista acha o artista (`/search/artist`) e lista os álbuns dele (`/artist/{id}/albums`), que já vêm com a data. Essa lista não informa o número de faixas, então `totalTracks` vem `0` nesses resultados.
 - `/editorial/0/releases` às vezes vem vazio. Nesse caso, usamos `/editorial/0/selection` (seleção editorial da Deezer).
 - `/album/{id}` só embute as 25 primeiras faixas. Por isso as faixas vêm de `/album/{id}/tracks?limit=500`.
 - Quando não há capa, a Deezer devolve uma URL quebrada (`.../images/cover//500x500...`). O provider converte isso em `coverUrl: null`.
@@ -63,7 +64,8 @@ Os `externalId` são da fonte atual. Se a fonte mudar com dados já salvos no ba
 
 | Rota | Retorno |
 |---|---|
-| `GET /albums/search?q=&limit=` | `{ data: AlbumSummary[] }` |
+| `GET /albums/search?q=&limit=` | `{ data: AlbumSummary[] }`: álbuns pelo nome (4.2-B1) |
+| `GET /albums/search/by-artist?q=&limit=` | `{ data: { artist: Artist \| null, albums: AlbumSummary[] } }`: álbuns do artista, mais novos primeiro (4.2-B2) |
 | `GET /albums/new-releases?limit=` | `{ data: AlbumSummary[] }` |
 | `GET /albums/:externalId` | `{ data: Album }` (com faixas e artistas) |
 | `GET /artists/search?q=&limit=` | `{ data: Artist[] }` |

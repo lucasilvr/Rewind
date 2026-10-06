@@ -7,6 +7,7 @@ import { CachedMusicProvider } from "../src/services/music/providers/cached.prov
 function fakeProvider(): MusicProvider {
   return {
     searchAlbums: async () => [],
+    searchAlbumsByArtist: async () => ({ artist: null, albums: [] }),
     getAlbum: async (externalId) => ({
       externalId,
       title: "Álbum",

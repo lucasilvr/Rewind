@@ -25,10 +25,18 @@ function readLimit(value: unknown): number | undefined {
 export function createMusicRouter(provider: MusicProvider): Router {
   const router = Router();
 
+  // 4.2-B1: álbuns pelo nome.
   router.get("/albums/search", async (req, res) => {
     const query = readQuery(req.query.q);
     const limit = readLimit(req.query.limit);
     res.json({ data: await provider.searchAlbums(query, { limit }) });
+  });
+
+  // 4.2-B2: álbuns pelo nome do artista. Devolve { artist, albums }.
+  router.get("/albums/search/by-artist", async (req, res) => {
+    const query = readQuery(req.query.q);
+    const limit = readLimit(req.query.limit);
+    res.json({ data: await provider.searchAlbumsByArtist(query, { limit }) });
   });
 
   // Declarada antes de /albums/:externalId para não ser capturada por ela.

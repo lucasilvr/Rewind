@@ -24,6 +24,11 @@ const provider: MusicProvider = {
     if (failure) throw failure();
     return [];
   },
+  searchAlbumsByArtist: async (query) => {
+    const failure = failures[query];
+    if (failure) throw failure();
+    return { artist: null, albums: [] };
+  },
   getAlbum: async () => {
     throw AppError.notFound("Álbum não encontrado.");
   },
@@ -63,6 +68,8 @@ describe("formato padronizado de erro", () => {
     ["/albums/search?q=bug", 500, "INTERNAL_ERROR"],
     ["/albums/search", 400, "VALIDATION_ERROR"],
     ["/albums/search?q=ok&limit=0", 400, "VALIDATION_ERROR"],
+    ["/albums/search/by-artist", 400, "VALIDATION_ERROR"],
+    ["/albums/search/by-artist?q=timeout", 504, "EXTERNAL_API_TIMEOUT"],
     ["/albums/123", 404, "NOT_FOUND"],
     ["/rota-que-nao-existe", 404, "NOT_FOUND"],
   ];
@@ -81,5 +88,11 @@ describe("formato padronizado de erro", () => {
     const response = await get("/albums/search?q=ok");
     assert.equal(response.status, 200);
     assert.deepEqual(response.body, { data: [] });
+  });
+
+  test("busca por artista responde { data: { artist, albums } }", async () => {
+    const response = await get("/albums/search/by-artist?q=ok");
+    assert.equal(response.status, 200);
+    assert.deepEqual(response.body, { data: { artist: null, albums: [] } });
   });
 });

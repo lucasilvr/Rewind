@@ -32,12 +32,21 @@ export interface ExternalAlbum extends ExternalAlbumSummary {
   tracks: ExternalTrack[];
 }
 
+/** Resultado da busca por artista: o artista encontrado e os álbuns dele. */
+export interface ExternalArtistAlbums {
+  artist: ExternalArtist | null;
+  albums: ExternalAlbumSummary[];
+}
+
 export interface ListOptions {
   limit?: number;
 }
 
 export interface MusicProvider {
+  /** Busca álbuns pelo nome. */
   searchAlbums(query: string, options?: ListOptions): Promise<ExternalAlbumSummary[]>;
+  /** Busca o artista mais relevante para o termo e devolve os álbuns dele. */
+  searchAlbumsByArtist(query: string, options?: ListOptions): Promise<ExternalArtistAlbums>;
   /** Lança AppError NOT_FOUND se o álbum não existir na fonte. */
   getAlbum(externalId: string): Promise<ExternalAlbum>;
   getNewReleases(options?: ListOptions): Promise<ExternalAlbumSummary[]>;

@@ -2,6 +2,7 @@ import type {
   ExternalAlbum,
   ExternalAlbumSummary,
   ExternalArtist,
+  ExternalArtistAlbums,
   ListOptions,
   MusicProvider,
 } from "../music.types";
@@ -37,6 +38,11 @@ export class CachedMusicProvider implements MusicProvider {
   searchAlbums(query: string, options?: ListOptions): Promise<ExternalAlbumSummary[]> {
     const key = `searchAlbums:${query.toLowerCase()}:${options?.limit ?? ""}`;
     return this.#cached(key, () => this.#inner.searchAlbums(query, options));
+  }
+
+  searchAlbumsByArtist(query: string, options?: ListOptions): Promise<ExternalArtistAlbums> {
+    const key = `searchAlbumsByArtist:${query.toLowerCase()}:${options?.limit ?? ""}`;
+    return this.#cached(key, () => this.#inner.searchAlbumsByArtist(query, options));
   }
 
   getAlbum(externalId: string): Promise<ExternalAlbum> {
