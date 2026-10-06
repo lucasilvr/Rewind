@@ -87,7 +87,7 @@ router.post("/", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, rememberMe } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({
@@ -116,7 +116,9 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign(
       { userId: user.id }, 
       process.env.JWT_SECRET!, 
-      { expiresIn: "1h" }
+      { 
+        expiresIn: rememberMe ? "30d" : "1d", 
+      }
     );
 
     return res.status(200).json({
@@ -130,7 +132,8 @@ router.post("/login", async (req, res) => {
         avatarUrl: user.avatarUrl,
         city: user.city,
         country: user.country,
-        createdAt: user.createdAt
+        createdAt: user.createdAt,
+        rememberMe: rememberMe
       }
     });
 
@@ -139,6 +142,41 @@ router.post("/login", async (req, res) => {
     
     return res.status(500).json({
       error: "Erro ao realizar login"
+    });
+  }
+});
+
+router.get("/me", authMiddleware, async (req: AuthRequest, res) => {
+  try {
+    const userId = req.userId;
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId }
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        error: "Usuário não encontrado"
+      });
+    }
+
+    return res.status(200).json({
+      id: user.id,
+      name: user.name,
+      username: user.username,
+      email: user.email,
+      bio: user.bio,
+      avatarUrl: user.avatarUrl,
+      city: user.city,
+      country: user.country,
+      createdAt: user.createdAt
+    });
+
+  } catch (error) {
+    console.error(error);
+    
+    return res.status(500).json({
+      error: "Erro ao buscar informações do usuário"
     });
   }
 });
