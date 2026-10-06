@@ -181,4 +181,18 @@ router.get("/me", authMiddleware, async (req: AuthRequest, res) => {
   }
 });
 
+router.post("/logout", authMiddleware, async (_req, res) => {
+  try {
+    return res.status(200).json({
+      message: "Logout realizado com sucesso"
+    });
+  } catch (error) {
+    console.error(error);
+    
+    return res.status(500).json({
+      error: "Erro ao realizar logout"
+    });
+  }
+});
+
 export default router;  
