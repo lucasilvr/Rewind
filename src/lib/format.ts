@@ -29,3 +29,23 @@ export function formatReleaseDate(releaseDate: string): string {
   const [year, month, day] = releaseDate.split("-").map(Number);
   return releaseDateFormat.format(new Date(Date.UTC(year, month - 1, day)));
 }
+const relativeTimeFormat = new Intl.RelativeTimeFormat("pt-BR", { numeric: "always" });
+
+const RELATIVE_UNITS: [Intl.RelativeTimeFormatUnit, number][] = [
+  ["year", 365 * 24 * 60 * 60],
+  ["month", 30 * 24 * 60 * 60],
+  ["day", 24 * 60 * 60],
+  ["hour", 60 * 60],
+  ["minute", 60],
+];
+
+/** Tempo desde uma data ISO (ex.: "há 2 dias", "há 3 horas", "agora"). */
+export function formatRelativeDate(isoDate: string, now: Date = new Date()): string {
+  const seconds = Math.round((new Date(isoDate).getTime() - now.getTime()) / 1000);
+  for (const [unit, unitSeconds] of RELATIVE_UNITS) {
+    if (Math.abs(seconds) >= unitSeconds) {
+      return relativeTimeFormat.format(Math.round(seconds / unitSeconds), unit);
+    }
+  }
+  return "agora";
+}
