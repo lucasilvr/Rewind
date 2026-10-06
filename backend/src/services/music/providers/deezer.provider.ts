@@ -6,6 +6,7 @@ import type {
   ExternalAlbum,
   ExternalAlbumSummary,
   ExternalArtist,
+  ExternalArtistAlbums,
   ExternalTrack,
   ListOptions,
   MusicProvider,
@@ -14,8 +15,9 @@ import type {
 const DEFAULT_BASE_URL = "https://api.deezer.com";
 const DEFAULT_LIST_LIMIT = 20;
 const MAX_LIST_LIMIT = 50;
-// Cada novidade custa 1 chamada extra para buscar o ano; limite baixo para poupar a cota.
-const MAX_NEW_RELEASES = 25;
+// Listas sem ano (novidades, busca por nome) custam 1 chamada extra por álbum para buscá-lo;
+// limite baixo para poupar a cota.
+const MAX_DETAILED_ALBUMS = 25;
 // /album/{id} só embute as 25 primeiras faixas; /album/{id}/tracks com limite alto traz todas.
 const MAX_TRACKS = 500;
 
@@ -73,11 +75,30 @@ export class DeezerProvider implements MusicProvider {
   }
 
   async searchAlbums(query: string, options?: ListOptions): Promise<ExternalAlbumSummary[]> {
+    // A busca geral ordena melhor por relevância que o filtro album:"..." da Deezer.
     const result = await this.#request<DeezerList<DeezerAlbum>>("/search/album", {
       q: query,
+      limit: Math.min(listLimit(options), MAX_DETAILED_ALBUMS),
+    });
+    return (await this.#withReleaseDate(result.data)).map(toAlbumSummary);
+  }
+
+  async searchAlbumsByArtist(query: string, options?: ListOptions): Promise<ExternalArtistAlbums> {
+    // O filtro artist:"..." da Deezer traz resultados pouco relevantes; achar o artista
+    // e listar os álbuns dele é mais preciso e já vem com a data de lançamento.
+    const artists = await this.#request<DeezerList<DeezerArtist>>("/search/artist", { q: query, limit: 1 });
+    const artist = artists.data[0];
+    if (!artist) return { artist: null, albums: [] };
+
+    const albums = await this.#request<DeezerList<DeezerAlbum>>(`/artist/${artist.id}/albums`, {
       limit: listLimit(options),
     });
-    return result.data.map(toAlbumSummary);
+    const newestFirst = [...albums.data].sort((a, b) => (b.release_date ?? "").localeCompare(a.release_date ?? ""));
+    return {
+      artist: toArtist(artist),
+      // A lista de álbuns do artista não repete o artista em cada item.
+      albums: newestFirst.map((album) => toAlbumSummary({ ...album, artist })),
+    };
   }
 
   async getAlbum(externalId: string): Promise<ExternalAlbum> {
@@ -99,7 +120,7 @@ export class DeezerProvider implements MusicProvider {
   }
 
   async getNewReleases(options?: ListOptions): Promise<ExternalAlbumSummary[]> {
-    const limit = Math.min(options?.limit ?? DEFAULT_LIST_LIMIT, MAX_NEW_RELEASES);
+    const limit = Math.min(options?.limit ?? DEFAULT_LIST_LIMIT, MAX_DETAILED_ALBUMS);
 
     // /editorial/0/releases às vezes vem vazio; a seleção editorial é o plano B.
     let albums = (await this.#request<DeezerList<DeezerAlbum>>("/editorial/0/releases", { limit })).data;
@@ -107,16 +128,7 @@ export class DeezerProvider implements MusicProvider {
       albums = (await this.#request<DeezerList<DeezerAlbum>>("/editorial/0/selection")).data;
     }
 
-    // As listas não trazem release_date; o detalhe do álbum traz.
-    // Se o detalhe falhar, o álbum segue sem ano em vez de derrubar a lista.
-    const detailed = await Promise.all(
-      albums.slice(0, limit).map((album) =>
-        album.release_date
-          ? album
-          : this.#request<DeezerAlbum>(`/album/${album.id}`).catch(() => album),
-      ),
-    );
-    return detailed.map(toAlbumSummary);
+    return (await this.#withReleaseDate(albums.slice(0, limit))).map(toAlbumSummary);
   }
 
   async searchArtists(query: string, options?: ListOptions): Promise<ExternalArtist[]> {
@@ -125,6 +137,20 @@ export class DeezerProvider implements MusicProvider {
       limit: listLimit(options),
     });
     return result.data.map(toArtist);
+  }
+
+  /**
+   * As listas da Deezer (busca, editorial) não trazem release_date; o detalhe do álbum traz.
+   * Se o detalhe falhar, o álbum segue sem ano em vez de derrubar a lista.
+   */
+  #withReleaseDate(albums: DeezerAlbum[]): Promise<DeezerAlbum[]> {
+    return Promise.all(
+      albums.map((album) =>
+        album.release_date
+          ? album
+          : this.#request<DeezerAlbum>(`/album/${album.id}`).catch(() => album),
+      ),
+    );
   }
 
   async #request<T>(path: string, params: Record<string, string | number> = {}): Promise<T> {

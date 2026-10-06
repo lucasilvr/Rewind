@@ -30,19 +30,17 @@ async function assertAppError(promise: Promise<unknown>, code: string, status: n
 afterEach(() => mock.restoreAll());
 
 describe("DeezerProvider: mapeamento", () => {
-  test("searchAlbums normaliza os campos e trata capa ausente", async () => {
+  test("searchAlbums normaliza os campos, trata capa ausente e busca o ano no detalhe", async () => {
+    const discovery = {
+      id: 302127,
+      title: "Discovery",
+      cover_big: "https://cdn.test/images/cover/abc/500x500.jpg",
+      nb_tracks: 14,
+      artist: { id: 27, name: "Daft Punk", picture_big: "https://cdn.test/images/artist//500x500.jpg" },
+    };
     const fetchMock = mockFetch({
-      "/search/album": {
-        data: [
-          {
-            id: 302127,
-            title: "Discovery",
-            cover_big: "https://cdn.test/images/cover/abc/500x500.jpg",
-            nb_tracks: 14,
-            artist: { id: 27, name: "Daft Punk", picture_big: "https://cdn.test/images/artist//500x500.jpg" },
-          },
-        ],
-      },
+      "/search/album": { data: [discovery] },
+      "/album/302127": { ...discovery, release_date: "2001-03-07" },
     });
 
     const albums = await createProvider().searchAlbums("daft punk", { limit: 5 });
@@ -52,7 +50,7 @@ describe("DeezerProvider: mapeamento", () => {
         externalId: "302127",
         title: "Discovery",
         coverUrl: "https://cdn.test/images/cover/abc/500x500.jpg",
-        releaseYear: null,
+        releaseYear: 2001,
         totalTracks: 14,
         artists: [{ externalId: "27", name: "Daft Punk", imageUrl: null }],
       },
@@ -60,6 +58,51 @@ describe("DeezerProvider: mapeamento", () => {
     const url = fetchMock.mock.calls[0].arguments[0] as URL;
     assert.equal(url.searchParams.get("q"), "daft punk");
     assert.equal(url.searchParams.get("limit"), "5");
+  });
+
+  test("searchAlbums mantém o álbum sem ano se o detalhe falhar", async () => {
+    mockFetch({ "/search/album": { data: [{ id: 7, title: "Sem detalhe", artist: { id: 1, name: "X" } }] } });
+
+    const albums = await createProvider().searchAlbums("x");
+
+    assert.equal(albums.length, 1);
+    assert.equal(albums[0].releaseYear, null);
+  });
+
+  test("searchAlbumsByArtist acha o artista e lista os álbuns dele, mais novos primeiro", async () => {
+    const fetchMock = mockFetch({
+      "/search/artist": { data: [{ id: 27, name: "Daft Punk", picture_big: "https://cdn.test/images/artist/dp/500x500.jpg" }] },
+      "/artist/27/albums": {
+        data: [
+          { id: 1, title: "Homework", release_date: "1997-01-20" },
+          { id: 2, title: "Random Access Memories", release_date: "2013-05-17" },
+        ],
+      },
+    });
+
+    const result = await createProvider().searchAlbumsByArtist("daft", { limit: 10 });
+
+    assert.deepEqual(result.artist, {
+      externalId: "27",
+      name: "Daft Punk",
+      imageUrl: "https://cdn.test/images/artist/dp/500x500.jpg",
+    });
+    assert.deepEqual(result.albums.map((album) => [album.title, album.releaseYear]), [
+      ["Random Access Memories", 2013],
+      ["Homework", 1997],
+    ]);
+    assert.deepEqual(result.albums[0].artists.map((artist) => artist.name), ["Daft Punk"]);
+    const albumsUrl = fetchMock.mock.calls[1].arguments[0] as URL;
+    assert.equal(albumsUrl.searchParams.get("limit"), "10");
+  });
+
+  test("searchAlbumsByArtist sem artista encontrado devolve lista vazia sem nova chamada", async () => {
+    const fetchMock = mockFetch({ "/search/artist": { data: [] } });
+
+    const result = await createProvider().searchAlbumsByArtist("ninguém");
+
+    assert.deepEqual(result, { artist: null, albums: [] });
+    assert.equal(fetchMock.mock.callCount(), 1);
   });
 
   test("getAlbum junta álbum, artistas principais e todas as faixas", async () => {

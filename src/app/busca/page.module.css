@@ -4,12 +4,13 @@
   padding: 26px 24px 48px;
 }
 
-.greeting {
-  margin-bottom: 40px;
-  text-align: center;
+.heading {
+  margin-bottom: 32px;
+  padding: 0 4px;
   font-size: 20px;
-  font-weight: 400;
+  font-weight: 500;
   color: var(--color-text);
+  overflow-wrap: anywhere;
 }
 
 @media (max-width: 560px) {
@@ -17,8 +18,8 @@
     padding: 20px 12px 32px;
   }
 
-  .greeting {
-    margin-bottom: 28px;
+  .heading {
+    margin-bottom: 24px;
     font-size: 17px;
   }
 }

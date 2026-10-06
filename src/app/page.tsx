@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { AlbumShelf, AlbumShelfSkeleton } from "@/components/AlbumShelf/AlbumShelf";
 import { ApiErrorMessage } from "@/components/ApiErrorMessage/ApiErrorMessage";
+import { EmptyState, Section } from "@/components/Section/Section";
 import { getErrorCode, type ApiErrorCode } from "@/lib/api/client";
 import { getNewReleases, type AlbumSummary } from "@/lib/api/music";
 import styles from "./page.module.css";
@@ -26,7 +27,7 @@ async function NewReleases() {
     return <ApiErrorMessage code={result.errorCode} title="Não foi possível carregar as novidades" />;
   }
   if (result.albums.length === 0) {
-    return <p className={styles.empty}>Nenhuma novidade no momento.</p>;
+    return <EmptyState>Nenhuma novidade no momento.</EmptyState>;
   }
   return <AlbumShelf albums={result.albums} />;
 }
@@ -37,24 +38,18 @@ export default function Home() {
       {/* TODO: incluir o nome do usuário ("Olá Daniel") quando a sessão estiver integrada. */}
       <h1 className={styles.greeting}>Olá! Confira as novidades que acabaram de sair!</h1>
 
-      <section className={styles.section} aria-labelledby="novidades">
-        <h2 id="novidades" className={styles.sectionTitle}>
-          Novidades no nosso site
-        </h2>
+      <Section title="Novidades no nosso site">
         <Suspense fallback={<AlbumShelfSkeleton />}>
           <NewReleases />
         </Suspense>
-      </section>
+      </Section>
 
-      <section className={styles.section} aria-labelledby="populares">
-        <h2 id="populares" className={styles.sectionTitle}>
-          Álbuns populares
-        </h2>
+      <Section title="Álbuns populares">
         {/* Populares saem do nosso banco (mais avaliados); entra quando existir a rota no backend. */}
-        <p className={styles.empty}>
+        <EmptyState>
           Ainda não há álbuns populares. Assim que a comunidade começar a avaliar, eles aparecem aqui.
-        </p>
-      </section>
+        </EmptyState>
+      </Section>
     </div>
   );
 }

@@ -44,8 +44,23 @@ function withQuery(path: string, params: Record<string, string | number | undefi
   return query ? `${path}?${query}` : path;
 }
 
+/** Resultado da busca por artista: o artista encontrado (ou null) e os álbuns dele. */
+export interface ArtistAlbums {
+  artist: Artist | null;
+  albums: AlbumSummary[];
+}
+
+/** Busca álbuns pelo nome. */
 export async function searchAlbums(query: string, limit?: number): Promise<AlbumSummary[]> {
   const response = await apiGet<DataResponse<AlbumSummary[]>>(withQuery("/albums/search", { q: query, limit }));
+  return response.data;
+}
+
+/** Busca álbuns pelo nome do artista. */
+export async function searchAlbumsByArtist(query: string, limit?: number): Promise<ArtistAlbums> {
+  const response = await apiGet<DataResponse<ArtistAlbums>>(
+    withQuery("/albums/search/by-artist", { q: query, limit }),
+  );
   return response.data;
 }
 

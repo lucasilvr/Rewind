@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ComponentType } from "react";
-import { HeartIcon, HomeIcon, SearchIcon, UserIcon } from "@/components/icons/icons";
+import { HeartIcon, HomeIcon, UserIcon } from "@/components/icons/icons";
+import { SearchBar } from "@/components/SearchBar/SearchBar";
 import styles from "./Topbar.module.css";
 
 // TODO: trocar pelo username do usuário logado quando a sessão estiver integrada ao backend.
@@ -44,16 +45,7 @@ export function Topbar() {
         <span className={styles.brandName}>Rewind</span>
       </Link>
 
-      {/* A busca ganha comportamento na tarefa de busca; por enquanto é só o campo. */}
-      <div className={styles.search}>
-        <SearchIcon size={20} />
-        <input
-          type="search"
-          className={styles.searchInput}
-          placeholder="Procure por artistas, álbuns e mais..."
-          aria-label="Buscar artistas e álbuns"
-        />
-      </div>
+      <SearchBar />
 
       <nav className={styles.nav} aria-label="Navegação principal">
         {NAV_ITEMS.map(({ href, label, icon: NavIcon, isActive }) => {
