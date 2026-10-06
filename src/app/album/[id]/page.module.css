@@ -9,14 +9,6 @@
   padding: 40px 16px;
 }
 
-.title {
-  font-family: var(--font-poppins), sans-serif;
-  font-size: 28px;
-  font-weight: 700;
-  color: #1A1B26;
-}
-
-/* Lista de faixas à esquerda e cartão de avaliação à direita, como no Figma. */
 .content {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 280px;

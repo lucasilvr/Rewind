@@ -1,3 +1,4 @@
+import { AlbumHeader } from "@/components/AlbumHeader/AlbumHeader";
 import { ApiErrorMessage } from "@/components/ApiErrorMessage/ApiErrorMessage";
 import { TrackList } from "@/components/TrackList/TrackList";
 import { getErrorCode } from "@/lib/api/client";
@@ -29,14 +30,12 @@ const AlbumDetailPage = async ({ params }: AlbumDetailPageProps) => {
   return (
     <main className={styles.page}>
       <div className={styles.container}>
-        {/* Cabeçalho completo (capa, artista, data, duração) fica na 4.3-F1. */}
-        <h1 className={styles.title}>{album.title}</h1>
+        <AlbumHeader album={album} />
 
         <div className={styles.content}>
           <div className={styles.mainColumn}>
             <TrackList tracks={album.tracks} />
           </div>
-          {/* Coluna da direita (média e botão "Avaliar") fica na 4.3-F3 e 4.3-F5. */}
           <aside className={styles.sidebar} />
         </div>
       </div>
