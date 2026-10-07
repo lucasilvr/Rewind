@@ -19,18 +19,57 @@ Este projeto foi inicializado com uma arquitetura moderna e padronizada:
 - **[React]** 
 - **[TypeScript]**
 - **CSS Modules**
+- **[Node.js]**
+- **[Express]**
+- **[Prisma]**
+- **[Docker]**
+- **[PostgreSQL]**
 
 ## Como Executar o Projeto Localmente
 
 ### Pré-requisitos
 Antes de começar, certifique-se de ter instalado em sua máquina:
 - [Node.js](https://nodejs.org/en/) (versão 18 ou superior)
-- Git (para versionamento e clonagem)
+- [Git](https://git-scm.com/) (para versionamento e clonagem)
+- [Docker](https://www.docker.com/) (para conteinirização do banco de dados)
 
 ### Passos para rodar o Front-end
 
 **Clone o repositório:**
    ```bash
    git clone https://github.com/lucasilvr/Rewind.git
-Acesse o projeto e rode: npm install
-Depois inicie o servidor localmente: npm run dev
+   ```
+Acesse o projeto e rode: 
+```npm install```
+
+Depois inicie o servidor localmente: ```npm run dev```
+
+
+### Passos para rodar o Back-end
+#### Instalação
+
+Acesse a pasta do backend: ```cd backend```
+
+Instale as dependências: ```npm install```
+
+#### Configuração do ambiente
+
+Crie um arquivo .env dentro da pasta "backend":
+```
+DATABASE_URL="postgresql://rewind:rewind@localhost:5432/rewind"
+JWT_SECRET="sua-chave-secreta"
+```
+
+#### Banco de dados
+
+Inicie o PostgreSQL utilizando o Docker Compose: ```docker compose up -d```
+
+Em seguida, execute as migrations do Prisma: ```npx prisma migrate dev```
+
+Gere o Prisma Client: ```npx prisma generate```
+
+#### Execução
+
+Inicie o servidor de desenvolvimento: ```npm run dev```
+
+O back-end estará disponível em: http://localhost:3001
