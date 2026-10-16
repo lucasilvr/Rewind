@@ -1,4 +1,5 @@
 import { AlbumCover } from "@/components/AlbumCover/AlbumCover";
+import { ReviewButton } from "@/components/ReviewButton/ReviewButton";
 import { StarRating } from "@/components/StarRating/StarRating";
 import type { Album } from "@/lib/api/music";
 import type { AlbumRating } from "@/lib/api/review";
@@ -49,6 +50,8 @@ export function RatingCard({ album, rating }: RatingCardProps) {
           </>
         )}
       </div>
+
+      <ReviewButton album={album} />
     </section>
   );
 }
